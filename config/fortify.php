@@ -132,11 +132,12 @@ return [
     */
 
     'features' => [
-        Features::registration(),
-        Features::resetPasswords(),
-        // Features::emailVerification(),
+        // コメントアウトで表示・非表示を切り替えることができる
+        Features::registration(),   // 登録
+        Features::resetPasswords(), // パスワードリセット
+        // Features::emailVerification(),  // メール認証
         Features::updateProfileInformation(),
-        Features::updatePasswords(),
+        Features::updatePasswords(),    // パスワード変更機能
         Features::twoFactorAuthentication([
             'confirm' => true,
             'confirmPassword' => true,
