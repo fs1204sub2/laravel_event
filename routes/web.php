@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LivewireTestController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,6 +18,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -25,4 +27,15 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+});
+
+
+// Route::controller(LivewireTestController::class)->prefix('livewire-test')->group(function(){
+//     Route::get('index', 'index')->name('liviwire-test.index');
+//     Route::get('register', 'register')->name('liviwire-test.register');
+// });
+
+Route::controller(LivewireTestController::class)->prefix('livewire-test')->name('livewire-test.')->group(function(){
+    Route::get('index', 'index')->name('index');
+    Route::get('register', 'register')->name('register');
 });
