@@ -31,6 +31,21 @@ Route::middleware([
 });
 
 
+Route::prefix('manager')->middleware('can:manager-higher')->group(function(){
+                                    //認可ルールを通過したらルーティングの処理が走る
+    Route::get('index', function () {
+        dd('manager');
+    });
+});
+
+Route::middleware('can:user-higher')->group(function(){
+    Route::get('index', function () {
+        dd('user');
+    });
+});
+
+
+
 // Route::controller(LivewireTestController::class)->prefix('livewire-test')->group(function(){
 //     Route::get('index', 'index')->name('liviwire-test.index');
 //     Route::get('register', 'register')->name('liviwire-test.register');
