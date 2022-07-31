@@ -28,6 +28,7 @@ const setting = {
     maxTime: "20:30",
 }
 
+
 flatpickr("#start_time",
     // {
     // "locale": Japanese,

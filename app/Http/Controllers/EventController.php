@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Models\Event;
+use App\Services\EventService;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class EventController extends Controller
@@ -41,7 +43,58 @@ class EventController extends Controller
      */
     public function store(StoreEventRequest $request)
     {
-        //
+        $check =  EventService::checkEventDuplication(
+            $request['event_date'],
+            $request['start_time'],
+            $request['end_time']
+        );
+        // $check = DB::table('events')
+        // ->whereDate('start_date', $request['event_date'])       // 日にち
+        // ->whereTime('end_date' , '>', $request['start_time'])
+        //     // >= としてもいいが、準備や撤収などもあるため、今回は>
+        // ->whereTime('start_date', '<', $request['end_time'])
+        // ->exists(); // 存在確認
+
+        // dd($check);
+        // 過去の日は登録できなため一旦ddを外して登録後、重複しているか確認している
+
+        if ($check) { // 存在したら
+            session()->flash('status', 'この時間帯は既に他の予約が存在します。');
+            return view('manager.events.create');
+        }
+
+        // 重複チュックにパスしたら、登録処理に入る。
+
+        $startDate = EventService::joinDateAndTime($request['event_date'], $request['start_time']);
+        $endDate = EventService::joinDateAndTime($request['event_date'], $request['end_time']);
+        // $start = $request['event_date'] . ' ' . $request['start_time'];
+        // $end = $request['event_date'] . ' ' . $request['end_time'];
+        // $startDate = Carbon::createFromFormat('Y-m-d H:i', $start );
+        // $endDate = Carbon::createFromFormat('Y-m-d H:i', $end );
+
+        // dd($startDate, $endDate);
+        // ^ Carbon\Carbon @1659236400 {#1500 ▼
+        //     ...
+        //     date: 2022-07-31 12:00:00.0 Asia/Tokyo (+09:00)
+        //   }
+        //   ^ Carbon\Carbon @1659240000 {#1497 ▼
+        //     ...
+        //     date: 2022-07-31 13:00:00.0 Asia/Tokyo (+09:00)
+        //   }
+
+
+        Event::create([
+            'name' => $request['event_name'],
+            'information' => $request['information'],
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+            'max_people' => $request['max_people'],
+            'is_visible' => $request['is_visible'],
+        ]);
+
+        session()->flash('status', '登録okです');
+
+        return to_route('events.index'); //名前付きルート
     }
 
     /**
