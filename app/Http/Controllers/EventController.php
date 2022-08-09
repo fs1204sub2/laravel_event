@@ -105,7 +105,19 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
-        //
+        // $eventDate = $event->event_date;
+        // $startTime = $event->start_time;
+        // $endTime = $event->end_time;
+        $eventDate = $event->eventDate;
+        $startTime = $event->startTime;
+        $endTime = $event->endTime;
+
+        // dd($eventDate, $startTime, $endTime);
+        // ^ "2022年07月01日"
+        // ^ "07時14分"
+        // ^ "08時14分"
+
+        return view('manager.events.show', compact('event', 'eventDate', 'startTime', 'endTime'));
     }
 
     /**
@@ -116,7 +128,7 @@ class EventController extends Controller
      */
     public function edit(Event $event)
     {
-        //
+
     }
 
     /**
