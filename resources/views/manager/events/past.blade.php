@@ -1,7 +1,9 @@
+{{-- index.blade.php からコピー --}}
+
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            イベント管理
+            過去のイベント一覧
         </h2>
     </x-slot>
 
@@ -16,12 +18,8 @@
                                 {{ session('status') }}
                             </div>
                         @endif
-
-                        <div class="flex justify-between">
-                            <button onclick="location.href='{{ route('events.create')}}'" class="flex mb-4 ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">新規登録</button>
-                            <button onclick="location.href='{{ route('events.past')}}'" class="flex mb-4 ml-auto text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-green-600 rounded">過去のイベント一覧</button>
-                        </div>
-
+                        {{-- onclickを付け加える mb-4を付け加える --}}
+                        <button onclick="location.href='{{ route('events.create')}}'" class="flex mb-4 ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">新規登録</button>
                       {{-- <div class="flex flex-col text-center w-full mb-20">
                         <h1 class="sm:text-4xl text-3xl font-medium title-font mb-2 text-gray-900">Pricing</h1>
                         <p class="lg:w-2/3 mx-auto leading-relaxed text-base">Banh mi cornhole echo park skateboard authentic crucifix neutra tilde lyft biodiesel artisan direct trade mumblecore 3 wolf moon twee</p>

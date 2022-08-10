@@ -30,7 +30,7 @@ class StoreEventRequest extends FormRequest
             'start_time' => ['required'],
             'end_time' => ['required', 'after:start_time'],
             'max_people' => ['required', 'numeric', 'between:1,20'],
-            'is_visible' => ['required', 'boolean']
+            'is_visible' => ['required', 'boolean'],
         ];
     }
 }
