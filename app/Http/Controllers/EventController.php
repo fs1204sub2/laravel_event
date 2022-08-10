@@ -20,10 +20,18 @@ class EventController extends Controller
     {
         $today = Carbon::today();
 
-        $events = DB::table('events')   // クエリビルダでとる
-        ->whereDate('start_date', '>=' , $today)
-        ->orderBy('start_date', 'asc') // 開始日時順
-        ->paginate(10); // 10件ずつ
+        $reservedPeople = DB::table('reservations')
+        ->select('event_id', DB::raw('sum(number_of_people) as number_of_people'))
+        ->whereNull('canceled_date')
+        ->groupBy('event_id');
+
+        $events = DB::table('events')
+        ->leftJoinSub($reservedPeople, 'reservedPeople', function($join){
+                $join->on('events.id', '=', 'reservedPeople.event_id');
+            })
+        ->whereDate('events.start_date', '>=' , $today)
+        ->orderBy('events.start_date', 'asc')
+        ->paginate(10);
 
         return view('manager.events.index', compact('events'));
     }
@@ -108,11 +116,42 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
+        $users = $event->users;
+
+        $reservations = [];
+        foreach($users as $user) {
+            $reservedInfo = [
+                'name' => $user->name,
+                'number_of_people' => $user->pivot->number_of_people,
+                'canceled_date' => $user->pivot->canceled_date,
+            ];
+
+            $reservations[] = $reservedInfo;
+        }
+
+        // dd($reservations);
+
+        // http://localhost/manager/events/2
+        // ^ array:2 [▼
+        //      0 => array:3 [▼
+        //          "name" => "admin"
+        //          "number_of_people" => 2
+        //          "canceled_date" => null
+        //      ]
+        //      1 => array:3 [▼
+        //          "name" => "manager"
+        //          "number_of_people" => 2
+        //          "canceled_date" => "2022-08-11 00:00:00"
+        //      ]
+        // ]
+
+        // canceled_date でcancelされたものは、view側に表示しないという方向で作っていきたい。
+
         $eventDate = $event->eventDate;
         $startTime = $event->startTime;
         $endTime = $event->endTime;
 
-        return view('manager.events.show', compact('event', 'eventDate', 'startTime', 'endTime'));
+        return view('manager.events.show', compact('event', 'users', 'reservations', 'eventDate', 'startTime', 'endTime'));
     }
 
     /**
@@ -170,13 +209,20 @@ class EventController extends Controller
 
     public function past()
     {
-        $today = Carbon::today();   //今日の日付を取得
-        // 今日の日付よりも前の情報だけを取得する。
+        $today = Carbon::today();
+
+        $reservedPeople = DB::table('reservations')
+        ->select('event_id', DB::raw('sum(number_of_people) as number_of_people'))
+        ->whereNull('canceled_date')
+        ->groupBy('event_id');
 
         $events = DB::table('events')
-                ->whereDate('start_date', '<', $today)
-                ->orderBy('start_date', 'desc')
-                ->paginate(10);
+        ->leftJoinSub($reservedPeople, 'reservedPeople', function($join){
+            $join->on('events.id', '=', 'reservedPeople.event_id');
+        })
+        ->whereDate('start_date', '<', $today)
+        ->orderBy('start_date', 'desc')
+        ->paginate(10);
 
         return view('manager.events.past', compact('events'));
     }

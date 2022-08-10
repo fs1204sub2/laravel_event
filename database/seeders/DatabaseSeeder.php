@@ -16,10 +16,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call([
-            UserSeeder::class
-        ]);
+        // ReservationはUser, Eventそれぞれに紐づくので、事前にEvent, Userを作った上で、Reservationのダミーデータが入るようにする
 
         Event::factory(100)->create();
+        
+        $this->call([
+            UserSeeder::class,
+            ReservationSeeder::class
+        ]);
     }
 }

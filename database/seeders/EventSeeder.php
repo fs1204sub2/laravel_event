@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Reservation;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class EventSeeder extends Seeder
 {
@@ -14,6 +16,6 @@ class EventSeeder extends Seeder
      */
     public function run()
     {
-        //
+        
     }
 }

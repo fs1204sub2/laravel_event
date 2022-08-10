@@ -50,4 +50,11 @@ class Event extends Model
         );
     }
 
+    public function users()
+    {
+                                                // 第2引数で中間テーブル名を指定
+        return $this->belongsToMany(User::class, 'reservations')
+                    ->withPivot('id', 'number_of_people', 'canceled_date');
+                            // withPivotで中間テーブル内の取得したい情報を指定
+    }
 }
