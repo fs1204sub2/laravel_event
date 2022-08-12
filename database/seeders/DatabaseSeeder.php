@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\Event;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -14,11 +16,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        // ReservationはUser, Eventそれぞれに紐づくので、事前にEvent, Userを作った上で、Reservationのダミーデータが入るようにする
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        Event::factory(100)->create();
+        
+        $this->call([
+            UserSeeder::class,
+            ReservationSeeder::class
+        ]);
     }
 }
