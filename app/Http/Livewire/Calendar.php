@@ -3,7 +3,6 @@
 namespace App\Http\Livewire;
 
 use App\Services\EventService;
-// use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Livewire\Component;
 
@@ -11,6 +10,8 @@ class Calendar extends Component
 {
     public $currentDate;
     public $day;
+    public $checkDay; // 日付判定用 $dayで日付を取っていたので、この下あたりにする
+    public $dayOfWeek; // 曜日も動的に変化させたい
     public $currentWeek;
     public $sevenDaysLater;
     public $events;
@@ -18,9 +19,7 @@ class Calendar extends Component
     public function mount()
     {
         $this->currentDate = CarbonImmutable::today();
-
         $this->sevenDaysLater = $this->currentDate->addDay(7);
-
         $this->currentWeek = [];    // 今日から7日分の日付を表示したい
 
         $this->events = EventService::getWeekEvents(
@@ -30,8 +29,18 @@ class Calendar extends Component
 
         for ($i = 0; $i < 7; $i++) {
             $this->day = CarbonImmutable::today()->addDay($i)->format('m月d日');
-            $this->currentWeek[] = $this->day;
+            $this->checkDay = CarbonImmutable::today()->addDays($i)->format('Y-m-d');   // 日付判定用のformatとして使うことができる。
+            $this->dayOfWeek = CarbonImmutable::today()->addDays($i)->dayName; // dayName で曜日を取得できる
+
+            // $this->currentWeek[] = $this->day;
+            $this->currentWeek[] = [
+                'day' => $this->day,                // カレンダー表示用 (○月△日)
+                'checkDay' => $this->checkDay,      // イベントの判定用 (○○○○-△△-□□)
+                'dayOfWeek' => $this->dayOfWeek     // 曜日
+            ];
+
         }
+        dd($this->currentWeek);
     }
 
     public function getDate($date)
@@ -47,8 +56,18 @@ class Calendar extends Component
 
         for ($i = 0; $i < 7; $i++ ) {
             $this->day = CarbonImmutable::parse($this->currentDate)->addDay($i)->format('m月d日');
-            $this->currentWeek[] = $this->day;
+            $this->checkDay = CarbonImmutable::parse($this->currentDate)->addDay($i)->format('Y-m-d');
+            $this->dayOfWeek = CarbonImmutable::parse($this->currentDate)->addDay($i)->dayName;
+
+            // $this->currentWeek[] = $this->day;
+            $this->currentWeek[] = [
+                'day' => $this->day,                // カレンダー表示用 (○月△日)
+                'checkDay' => $this->checkDay,      // イベントの判定用 (○○○○-△△-□□)
+                'dayOfWeek' => $this->dayOfWeek     // 曜日
+            ];
         }
+
+        dd($this->currentWeek);
     }
 
 
