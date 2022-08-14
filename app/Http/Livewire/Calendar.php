@@ -38,9 +38,7 @@ class Calendar extends Component
                 'checkDay' => $this->checkDay,      // イベントの判定用 (○○○○-△△-□□)
                 'dayOfWeek' => $this->dayOfWeek     // 曜日
             ];
-
         }
-        dd($this->currentWeek);
     }
 
     public function getDate($date)
@@ -66,10 +64,7 @@ class Calendar extends Component
                 'dayOfWeek' => $this->dayOfWeek     // 曜日
             ];
         }
-
-        dd($this->currentWeek);
     }
-
 
     public function render()
     {

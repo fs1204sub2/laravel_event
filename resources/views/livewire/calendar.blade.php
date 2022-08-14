@@ -32,18 +32,23 @@
                                                     {{-- DBのイベント開始日 時刻と、カレンダーの開始日 時刻が一致すれば --}}
                                 @if(!is_null($events->firstWhere('start_date', $currentWeek[$i]['checkDay'] . " " . \Constant::EVENT_TIME[$j]) ))
                                     @php
+                                        $eventId = $events->firstWhere('start_date', $currentWeek[$i]['checkDay'] . " " . \Constant::EVENT_TIME[$j])->id;
                                         $eventName = $events->firstWhere('start_date', $currentWeek[$i]['checkDay'] . " " . \Constant::EVENT_TIME[$j])->name; // ①
                                         $eventInfo = $events->firstWhere('start_date', $currentWeek[$i]['checkDay'] . " " . \Constant::EVENT_TIME[$j]); //②
                                         $eventPeriod = \Carbon\Carbon::parse($eventInfo->start_date)->diffInMinutes($eventInfo->end_date) / 30 - 1; // ③
                                                                     // 開始時刻のCarbonインスタンスを取れる     終了時刻との分単位の差分を取る
                                     @endphp
 
+
                                     {{-- ①{{ $events->firstWhere('start_date', $currentWeek[$i]['checkDay'] . " " . \Constant::EVENT_TIME[$j])->name }}
                                     長いので、変数に格納する --}}
-                                    <div class="py-1 px-2 border border-gray-200 text-center bg-blue-100">
-                                                                    {{-- ②背景色をつける イベント名の部分に背景色がつく --}}
-                                        {{ $eventName }}
-                                    </div>
+                                    <a href="{{ route('events.detail', ['id' => $eventId ]) }}">
+                                        <div class="py-1 px-2 border border-gray-200 text-center bg-blue-100">
+                                                                        {{-- ②背景色をつける イベント名の部分に背景色がつく --}}
+                                            {{ $eventName }}
+                                        </div>
+                                    </a>
+
 
                                     @if ($eventPeriod > 0)  {{-- イベントが30分を超えるなら、、、 --}}
                                         @for($k = 0; $k < $eventPeriod; $k++) {{-- // $eventPeriod の数だけ背景色を作る --}}
