@@ -26,12 +26,21 @@ class ReservationController extends Controller
         ->first();
 
         if(!is_null($reservedPeople)) {
-            $resevablePeople = $event->max_people - $reservedPeople->number_of_people;
+            $reservablePeople = $event->max_people - $reservedPeople->number_of_people;
         } else {
-            $resevablePeople = $event->max_people;
+            $reservablePeople = $event->max_people;
         }
 
-        return view('event-detail', compact('event', 'resevablePeople'));
+        // 予約の最新データを取得
+        // ->where('canceled_date', '=', null) で、キャンセルされた予約は取り除いている
+        // 最新のデータで、'canceled_date' が null 出ない場合は、間違ったレコードを抽出してしまうのでは？？？
+        $isReserved = Reservation::where('user_id', '=', Auth::id())
+        ->where('event_id', '=', $id)
+        ->where('canceled_date', '=', null)
+        ->latest()
+        ->first();
+
+        return view('event-detail', compact('event', 'reservablePeople', 'isReserved'));
     }
 
     public function reserve(Request $request)

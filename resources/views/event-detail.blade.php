@@ -65,12 +65,16 @@ manager/events/show.blade.phpをコピーして不要な箇所を削除  --}}
 
                             {{-- 定員数をコピー --}}
                             <div class="mt-4">
-                                <x-jet-label for="reserved_people" value="予約人数" />
-                                <select name="reserved_people">
-                                    @for ($i = 1; $i <= $resevablePeople; $i++)
-                                        <option value="{{$i}}">{{$i}}</option>
-                                    @endfor
-                                </select>
+                                @if($reservablePeople <= 0 )
+                                    <span class="text-red-500 text-xs">このイベントは満員です。</span>
+                                @else
+                                    <x-jet-label for="reserved_people" value="予約人数" />
+                                    <select name="reserved_people">
+                                        @for ($i = 1; $i <= $reservablePeople; $i++)
+                                            <option value="{{$i}}">{{$i}}</option>
+                                        @endfor
+                                    </select>
+                                @endif
                             </div>
 
 
@@ -83,52 +87,26 @@ manager/events/show.blade.phpをコピーして不要な箇所を削除  --}}
                                 @endif
                             </div> --}}
 
+
                             <input type="hidden" name="id" value="{{ $event->id }}">
                             {{-- イベントのidを渡す。 --}}
 
-                            <x-jet-button class="ml-4">
-                                {{-- 編集する --}}
-                                予約する
-                            </x-jet-button>
+                            @if($isReserved === null)
+                                <input type="hidden" name="id" value="{{ $event->id }}">
+                                <div class="flex items-center justify-center mt-4">
+                                    <x-jet-button class="ml-4">
+                                        予約する
+                                    </x-jet-button>
+                                </div>
+                            @else
+                                <span class="text-xs">このイベントは既に予約済みです。</span>
+                            @endif
+
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-{{--
-{{--    不要なので消す。
-    <div class="py-4">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                <div class="max-w-2xl mx-auto py-4">
-                    @if (!$users->isEmpty())
-                        <div class="text-center py-2">
-                            予約情報
-                        </div>
-
-                        <table class="table-auto w-full text-left whitespace-no-wrap">
-                            <thead>
-                                <tr>
-                                    <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">予約者名</th>
-                                    <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">予約人数</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($reservations as $reservation)
-                                    @if(is_null($reservation['canceled_date']))
-                                        <tr>
-                                            <td class="px-4 py-3">{{ $reservation['name'] }}</td>
-                                            <td class="px-4 py-3">{{ $reservation['number_of_people'] }}</td>
-                                        </tr>
-                                    @endif
-                                @endforeach
-                            </tbody>
-                        </table>
-                    @endif
-                </div>
-            </div>
-        </div>
-    </div> --}}
 
 </x-app-layout>

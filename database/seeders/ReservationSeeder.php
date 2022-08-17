@@ -41,6 +41,12 @@ class ReservationSeeder extends Seeder
                 'number_of_people' => 2,
                 'canceled_date' => '2022-08-11 00:00:00',
             ],
+            [
+                'user_id' => 2,
+                'event_id' => 2,
+                'number_of_people' => 2,
+                'canceled_date' => '2022-08-11 00:00:00',
+            ],
         ]);
     }
 }
