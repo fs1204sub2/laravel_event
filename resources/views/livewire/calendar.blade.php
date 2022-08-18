@@ -8,7 +8,9 @@
             type="text" name="calendar" value="{{ $currentDate }}"
             wire:change="getDate($event.target.value)" />
 
-            <div class="flex border border-green-400 mx-auto">
+            {{-- <div class="flex border border-green-400 mx-auto"> --}}
+                {{-- ↓ --}}
+            <div class="flex mx-auto">
                 <x-calendar-time /> {{-- コンポーネント作成 仮で直書き コンポーネントクラスを使う場合は、CalendarTime.php（キャメルケース） --}}
 
                 @for ($i = 0; $i < 7; $i++) {{-- @foreach ($currentWeek as $v) --}}
